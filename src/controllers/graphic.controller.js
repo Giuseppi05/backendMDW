@@ -2,12 +2,13 @@ import Restaurant from '../models/restaurants.model.js'
 import User from '../models/user.model.js'
 import Incident from '../models/incident.model.js'
 import Offer from '../models/offer.model.js'
+import Match from '../models/match.model.js'
 
 export const getStats = async (req, res) => {
   try {
     const totalUsers = await User.countDocuments();
     const totalRestaurants = await Restaurant.countDocuments();
-    const totalOffers = await Offer.countDocuments();
+    const totalMatchs = await Match.countDocuments();
     const totalIncidents = await Incident.countDocuments();
 
     const now = new Date();
@@ -15,7 +16,7 @@ export const getStats = async (req, res) => {
 
     const usersLastMonth = await User.countDocuments({ createdAt: { $lt: lastMonthEnd } });
     const restaurantsLastMonth = await Restaurant.countDocuments({ createdAt: { $lt: lastMonthEnd } });
-    const offersLastMonth = await Offer.countDocuments({ createdAt: { $lt: lastMonthEnd } });
+    const matchsLastMonth = await Match.countDocuments({ createdAt: { $lt: lastMonthEnd } });
     const incidentsLastMonth = await Incident.countDocuments({ createdAt: { $lt: lastMonthEnd } });
 
     const calculatePercentageChange = (total, previousTotal) => {
@@ -30,8 +31,8 @@ export const getStats = async (req, res) => {
       userChange: calculatePercentageChange(totalUsers, usersLastMonth),
       totalRestaurants,
       restaurantChange: calculatePercentageChange(totalRestaurants, restaurantsLastMonth),
-      totalOffers,
-      offersChange: calculatePercentageChange(totalOffers, offersLastMonth),
+      totalMatchs,
+      matchsChange: calculatePercentageChange(totalMatchs, matchsLastMonth),
       totalIncidents,
       incidentsChange: calculatePercentageChange(totalIncidents, incidentsLastMonth),
     });

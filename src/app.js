@@ -8,6 +8,7 @@ import userRoutes from './routes/user.routes.js'
 import offerRoutes from './routes/offers.routes.js'
 import incidentRoutes from './routes/incident.routes.js'
 import graphicRoutes from './routes/graphic.routes.js'
+import matchRoutes from './routes/match.routes.js'
 
 const app = express()
 
@@ -24,12 +25,12 @@ app.use((req, res, next) => {
     next();
 });
 
-
 app.use('/api/auth',authRoutes)
 app.use('/api/restaurant',restaurantRoutes)
 app.use('/api/user',userRoutes)
 app.use('/api/offer',offerRoutes)
 app.use('/api/incident',incidentRoutes)
 app.use('/api/graphic', graphicRoutes)
+app.use('/api/match', matchRoutes)
 
 export default app
