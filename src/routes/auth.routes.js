@@ -10,6 +10,6 @@ router.post('/register', validateAuth, register)
 router.post('/login', validateAuth, requestLogger, login)
 router.post('/logout', logout)
 router.get('/profile', authRequired, profile)
-router.get('/session', authRequired)
+router.get('/session', checkSession)
 
 export default router
