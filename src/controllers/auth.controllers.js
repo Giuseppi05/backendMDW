@@ -1,6 +1,7 @@
 import Auth from "../models/auth.models.js";
 import bcrypt from "bcrypt";
 import { createAccessToken } from "../libs/jwt.js";
+import jwt from 'jsonwebtoken'
 
 export const register = async (req, res) => {
     const {email, password, verifiedPassword} = req.body

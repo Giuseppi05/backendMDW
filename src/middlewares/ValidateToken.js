@@ -1,4 +1,4 @@
-import jsonwebtoken from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 
 export const authRequired = async (req, res, next) => {
     const { token } = req.cookies;
