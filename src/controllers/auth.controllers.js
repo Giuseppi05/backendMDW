@@ -46,6 +46,7 @@ export const login = async (req, res) => {
 
         const token = await createAccessToken({ id: userFound._id });
         res.cookie('token', token, {
+            httpOnly: true,
             secure: true,
             sameSite: 'lax', 
         });
@@ -79,4 +80,19 @@ export const profile = async (req, res) => {
         createdAt: userFound.createdAt,
         updatedAt: userFound.updatedAt
     })
+}
+
+export const checkSession = (req, res) => {
+    const token = req.cookies.token; 
+
+    if (!token) {
+        return res.status(401).json({ message: 'No estás autenticado' });
+    }
+
+    try {
+        const decoded = jwt.verify(token, proccess.env.JWT_SECRET);
+        res.status(200).json({ user: decoded }); 
+    } catch (err) {
+        res.status(403).json({ message: 'Token inválido' });
+    }
 }
