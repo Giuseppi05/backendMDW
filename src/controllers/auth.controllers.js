@@ -44,23 +44,35 @@ export const login = async (req, res) => {
         const isMatch = await bcrypt.compare(password, userFound.password);
         if (!isMatch) return res.status(400).json({ message: "Contraseña incorrecta" });
 
-        const token = await createAccessToken({ id: userFound._id });
-        res.cookie('token', token, {
+        console.log("User ID:", userFound._id);
+
+        let token;
+        try {
+            token = await createAccessToken({ id: userFound._id });
+            console.log("Generated Token:", token);
+        } catch (err) {
+            console.error("Error generating token:", err);
+            return res.status(500).json({ message: "Error al generar el token" });
+        }
+
+        res.cookie("token", token, {
             httpOnly: true,
             secure: true,
-            sameSite: 'lax', 
+            sameSite: "lax",
         });
+
         res.json({
             id: userFound._id,
             email: userFound.email,
             createdAt: userFound.createdAt,
-            updatedAt: userFound.updatedAt
+            updatedAt: userFound.updatedAt,
         });
     } catch (error) {
-        console.log(error);
+        console.error("Server error:", error);
         res.status(500).json({ message: "Server error" });
     }
 };
+
 
 export const logout = async (req, res) => {
     res.cookie("token", "", {
