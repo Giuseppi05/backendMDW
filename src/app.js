@@ -12,7 +12,7 @@ import graphicRoutes from './routes/graphic.routes.js'
 const app = express()
 
 app.use(cors({
-    origin: ['http://localhost:5173', 'https://frontend-alpha-sable-38.vercel.app'], 
+    origin: ['http://localhost:5173', 'https://frontend-delta-taupe-97.vercel.app'], 
     credentials: true, 
 }));
 
