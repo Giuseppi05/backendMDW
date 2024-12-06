@@ -58,7 +58,7 @@ export const login = async (req, res) => {
         res.cookie("token", token, {
             httpOnly: true,
             secure: true,
-            sameSite: "lax",
+            sameSite: "none",
         });
 
         res.json({
@@ -94,17 +94,26 @@ export const profile = async (req, res) => {
     })
 }
 
-export const checkSession = (req, res) => {
-    const token = req.cookies.token; 
-
-    if (!token) {
-        return res.status(401).json({ message: 'No estás autenticado' });
-    }
-
+export const checkSession = async (req, res) => {
     try {
-        const decoded = jwt.verify(token, proccess.env.JWT_SECRET);
-        res.status(200).json({ user: decoded }); 
-    } catch (err) {
-        res.status(403).json({ message: 'Token inválido' });
+      const { token } = req.cookies;
+      
+      if (!token) {
+        return res.status(401).json({ message: "No autorizado" });
+      }
+  
+      const decoded = jwt.verify(token, process.env.JWT_SECRET);
+      
+      const userFound = await Auth.findById(decoded.id);
+      if (!userFound) {
+        return res.status(401).json({ message: "Usuario no encontrado" });
+      }
+  
+      return res.status(200).json({ 
+        id: userFound._id, 
+        email: userFound.email 
+      });
+    } catch (error) {
+      return res.status(401).json({ message: "Sesión inválida" });
     }
-}
+  };
