@@ -85,7 +85,6 @@ export const logout = async (req, res) => {
         httpOnly: true,
         secure: true,
         sameSite: 'none',
-        path: '/'
     });
     return res.sendStatus(200)
 }
