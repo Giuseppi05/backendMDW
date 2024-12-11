@@ -6,22 +6,27 @@ import Match from '../models/match.model.js'
 
 export const getStats = async (req, res) => {
   try {
+    const today = new Date();
+    const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1, 0, 0, 0);
+    const thisMonthEnd = new Date(today.getFullYear(), today.getMonth() + 1, 1, 0, 0, 0); 
+
+    const totalIncidents = await Incident.countDocuments({date: { $gte: thisMonthStart, $lt: thisMonthEnd } });
     const totalUsers = await User.countDocuments();
     const totalRestaurants = await Restaurant.countDocuments();
     const totalMatchs = await Match.countDocuments();
-    const totalIncidents = await Incident.countDocuments();
 
     const now = new Date();
-    const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0);
-
-    const usersLastMonth = await User.countDocuments({ createdAt: { $lt: lastMonthEnd } });
-    const restaurantsLastMonth = await Restaurant.countDocuments({ createdAt: { $lt: lastMonthEnd } });
-    const matchsLastMonth = await Match.countDocuments({ createdAt: { $lt: lastMonthEnd } });
-    const incidentsLastMonth = await Incident.countDocuments({ createdAt: { $lt: lastMonthEnd } });
-
+    const lastMonthStart = new Date(now.getFullYear(), now.getMonth() - 1, 1, 0, 0, 0); 
+    const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0); 
+    
+    const usersLastMonth = await User.countDocuments({ createdAt: { $gte: lastMonthStart, $lt: lastMonthEnd } });
+    const restaurantsLastMonth = await Restaurant.countDocuments({ createdAt: { $gte: lastMonthStart, $lt: lastMonthEnd } });
+    const matchsLastMonth = await Match.countDocuments({ createdAt: { $gte: lastMonthStart, $lt: lastMonthEnd } });
+    const incidentsLastMonth = await Incident.countDocuments({ date: { $gte: lastMonthStart, $lt: lastMonthEnd } });
+    
     const calculatePercentageChange = (total, previousTotal) => {
       if (previousTotal === 0) {
-        return total > 0 ? 100 : 0; // Si hay nuevos registros y antes había 0, es 100% de crecimiento
+        return total > 0 ? 100 : 0; 
       }
       return ((total - previousTotal) / previousTotal * 100).toFixed(2);
     };
